@@ -53,7 +53,7 @@ namespace ConsoleApp1
             List<string> imageLinks = null;
             
 
-            imageLinks = new List<string>(File.ReadAllLines(@"D:\123\gifts\Обновление остатков.csv"));
+            imageLinks = new List<string>(File.ReadAllLines(@"выгрузка.csv"));
             List<ProductUrl> productUrls = new List<ProductUrl>();
             foreach (string s in imageLinks)
             {
@@ -76,7 +76,7 @@ namespace ConsoleApp1
                     if (!s.Contains("https"))
                     {
                         // logging(current.product+" BAD");
-                        BADURL.Add(current.product);
+                        BADURL.Add(current.product+";" + s);
                         continue;
                     }
                     WebRequest webRequest = HttpWebRequest.Create(s);
@@ -91,7 +91,7 @@ namespace ConsoleApp1
                     catch (WebException ex)
                     {
                         //logging(current.product+ " " +ex.Message);
-                        exMess.Add(current.product + ";" + ex.Message);
+                        exMess.Add(current.product + ";"+s+";" + ex.Message);
                         badUrls.Add(s);
                     }
                     finally
@@ -101,24 +101,15 @@ namespace ConsoleApp1
 
                     if (a % 100 == 0)
                     {
-                        File.AppendAllLines("D:/Bad.txt", BADURL);
-                        File.AppendAllLines("D:/ex.txt", exMess);
+                        File.AppendAllLines("Bad.txt", BADURL);
+                        File.AppendAllLines("ex.txt", exMess);
                         
                         BADURL.Clear();
                         exMess.Clear();
                     }
 
 
-                    //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(s);
-                    //HttpWebResponse requeste = (HttpWebResponse)request.GetResponse();
-                    //if (requeste.StatusCode.ToString() != "OK")
-                    //    MessageBox.Show(requeste.StatusDescription);
-                    //else
-                    //{
-                    //    logging(current.product + " OK");
-                    //}
-                    //requeste.GetResponseStream().Close();
-                    //request.GetResponse().Close();
+          
                 }
 
                 if (badUrls.Count != 0)
@@ -137,13 +128,13 @@ namespace ConsoleApp1
               Console.Clear();
                     decimal procente = Convert.ToDecimal(g)/Convert.ToDecimal(productUrls.Count);
                     procente = 100 * procente;
-                    Console.WriteLine(g.ToString() + "/" + productUrls.Count + "  " + procente.ToString() + " %");
+                    Console.WriteLine(g.ToString() + "/" + productUrls.Count + "  " + Math.Round(procente,4).ToString() + " %");
                   //  File.WriteAllText("D:/progress.txt", g.ToString() + "/" + productUrls.Count + "  " + procente.ToString() + " %" + Environment.NewLine);
                // }
 
 
             }
-            File.WriteAllLines("D:/404.txt",tofile404);
+            File.WriteAllLines("404.txt",tofile404);
         }
 
 
